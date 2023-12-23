@@ -12,7 +12,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final Soundpool pool =
       Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
-  List<int> _soundIds = [];
+  final List<int> _soundIds = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -26,102 +27,112 @@ class _MainScreenState extends State<MainScreen> {
         await rootBundle.load('asset/do1.wav').then((ByteData soundData) {
       return pool.load(soundData);
     });
-    print('1번: $soundId');
+    // print('1번: $soundId');
 
     _soundIds.add(soundId);
 
     soundId = await rootBundle.load('asset/re.wav').then((ByteData soundData) {
       return pool.load(soundData);
     }); // then 함수 안에서만 쓰이는 지역변수
-    print('2번: $soundId');
+    // print('2번: $soundId');
     _soundIds.add(soundId);
 
-    // soundId = await rootBundle.load('asset/mi.wav').then((ByteData soundData) {
-    //   return pool.load(soundData);
-    // });
+    soundId = await rootBundle.load('asset/mi.wav').then((ByteData soundData) {
+      return pool.load(soundData);
+    });
 
-    // _soundIds.add(soundId);
+    _soundIds.add(soundId);
 
-    // soundId = await rootBundle.load('asset/fa.wav').then((ByteData soundData) {
-    //   return pool.load(soundData);
-    // });
+    soundId = await rootBundle.load('asset/fa.wav').then((ByteData soundData) {
+      return pool.load(soundData);
+    });
 
-    // _soundIds.add(soundId);
+    _soundIds.add(soundId);
 
-    // soundId = await rootBundle.load('asset/sol.wav').then((ByteData soundData) {
-    //   return pool.load(soundData);
-    // });
+    soundId = await rootBundle.load('asset/sol.wav').then((ByteData soundData) {
+      return pool.load(soundData);
+    });
 
-    // _soundIds.add(soundId);
+    _soundIds.add(soundId);
 
-    // soundId = await rootBundle.load('asset/la.wav').then((ByteData soundData) {
-    //   return pool.load(soundData);
-    // });
+    soundId = await rootBundle.load('asset/la.wav').then((ByteData soundData) {
+      return pool.load(soundData);
+    });
 
-    // _soundIds.add(soundId);
+    _soundIds.add(soundId);
 
-    // soundId = await rootBundle.load('asset/si.wav').then((ByteData soundData) {
-    //   return pool.load(soundData);
-    // });
+    soundId = await rootBundle.load('asset/si.wav').then((ByteData soundData) {
+      return pool.load(soundData);
+    });
 
-    // _soundIds.add(soundId);
+    _soundIds.add(soundId);
 
-    // soundId = await rootBundle.load('asset/do2.wav').then((ByteData soundData) {
-    //   return pool.load(soundData);
-    // });
+    soundId = await rootBundle.load('asset/do2.wav').then((ByteData soundData) {
+      return pool.load(soundData);
+    });
 
-    // _soundIds.add(soundId);
+    _soundIds.add(soundId);
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('실로폰')),
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            keybord('도', Colors.red),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: keybord('레', Colors.orange),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: keybord('미', Colors.yellow),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: keybord('파', Colors.green),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              child: keybord('솔', Colors.blue),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
-              child: keybord('라', Colors.blueGrey),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: keybord('시', Colors.purple),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 56),
-              child: keybord('도', Colors.red),
-            ),
-          ],
-        ));
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  keybord('도', Colors.red, _soundIds[0]),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: keybord('레', Colors.orange, _soundIds[1])),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: keybord('미', Colors.yellow, _soundIds[2]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: keybord('파', Colors.green, _soundIds[3]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
+                    child: keybord('솔', Colors.blue, _soundIds[4]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    child: keybord('라', Colors.blueGrey, _soundIds[5]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 48),
+                    child: keybord('시', Colors.purple, _soundIds[6]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 56),
+                    child: keybord('도', Colors.red, _soundIds[7]),
+                  ),
+                ],
+              ));
   }
 
-  Widget keybord(String text, Color color) {
-    return Container(
-      width: 50,
-      height: double.infinity,
-      color: color,
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 20, color: Colors.white),
+  Widget keybord(String text, Color color, int soundId) {
+    return GestureDetector(
+      onTap: () {
+        pool.play(soundId);
+      },
+      child: Container(
+        width: 50,
+        height: double.infinity,
+        color: color,
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
         ),
       ),
     );
